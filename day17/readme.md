@@ -1,4 +1,10 @@
 The goal was to create a simple true/false quiz game while using the OOP paradigm.
+The program should:
+ - loop through 
+ - keep track of your score
+ - randomize the question for each new occurence
+ - use OOP paradigm as much as possible
+ - print score at the end after stopping
 
 THINGS I DID GREAT:
   - Get the program running to specifications
