@@ -101,11 +101,27 @@ def is_transaction_possible(coffee_choice, menu_items, resources_left):
             return False
     return True
 
+logo = """
+        /~~~~~~~~/|
+       / /######/ / |
+      / /______/ /  |
+     ============ /||
+     |__________|/ ||
+      |\__,,__/    ||
+      | __,,__     ||
+      |_\====/%____||
+      | /~~~~\ %  / |
+     _|/      \%_/  |
+    | |        | | /
+    |__\______/__|/
+    ~~~~~~~~~~~~~~
+"""
 
 def coffee_machine():
     ordering = True
     enoughChange = True
     while ordering:
+        print(logo)
         possible = True
         coffeeChoice = choose_coffee(resources)
         enoughChange = insert_coins(coffeeChoice, MENU)
