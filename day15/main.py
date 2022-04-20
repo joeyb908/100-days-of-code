@@ -61,7 +61,7 @@ def show_resources(resources_left):
             print(f"{type.title()}: {resources_left[type]}ml")
 
 
-def choose_coffee():
+def choose_coffee(resources_left):
     """Lets user choose what coffee they want"""
 
     coffee = ''
@@ -70,6 +70,8 @@ def choose_coffee():
         coffee = input("What would you like? (Espresso / Latte / Cappuccino): ").lower()
         if coffee == "espresso" or coffee == "latte" or coffee == "cappuccino":
             return coffee
+        elif coffee == 'report':
+            show_resources(resources_left)
         else:
             coffee = input("What would you like? (Espresso / Latte / Cappuccino): ").lower()
 
@@ -105,15 +107,15 @@ def coffee_machine():
     enoughChange = True
     while ordering:
         possible = True
-        coffeeChoice = choose_coffee()
+        coffeeChoice = choose_coffee(resources)
         enoughChange = insert_coins(coffeeChoice, MENU)
         if coffeeChoice == "off":
             return
+
         elif enoughChange:
             possible = is_transaction_possible(coffeeChoice, MENU, resources)
             if possible:
                 change_resources(coffeeChoice, MENU, resources)
-                show_resources(resources)
 
 
 coffee_machine()
