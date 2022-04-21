@@ -8,6 +8,7 @@ Things I had to do:
 - break down said colors into their RGB format
 - use the turtle class to create dots spaced out in a straight line
 - return the starting position but a little higher so it replicates what the spot painting looks like
+- create a 10x10 rendition of a spot painting
 
 Overall, this project was fun, quick, and easy.
 
