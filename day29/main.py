@@ -10,37 +10,51 @@ FONT = ("Cambria", 12)
 
 
 def generate_password():
+    """Generates a randomize password of length 12 - 18"""
 
+    # list containing all letters, symbols, and numbers commonly used in English keyboard
     letters = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
     numbers = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']
     symbols = ['!', '#', '$', '%', '&', '(', ')', '*', '+']
 
+    # randomly generate the number of letters, symbols, and numbers that are going to be used
     nr_letters = random.randint(8, 10)
     nr_symbols = random.randint(2, 4)
     nr_numbers = random.randint(2, 4)
 
+    # empty password list
     password_list = []
 
+    # append a random letter to the list in the range of randomly generated range of letters
     [password_list.append(random.choice(letters)) for char in range(nr_letters)]
     # for char in range(nr_letters):
     #   password_list.append(random.choice(letters))
 
+    # append a random symbol to the list in the range of randomly generated range of symbols
     [password_list.append(random.choice(symbols)) for symbol in range(nr_symbols)]
     # for char in range(nr_symbols):
     #   password_list += random.choice(symbols)
 
+    # append a random number to the list in the range of randomly generated range of numbers
     [password_list.append(random.choice(numbers)) for number in range(nr_numbers)]
     # for char in range(nr_numbers):
     #   password_list += random.choice(numbers)
 
+    # shuffle the password list so the password isn't presented in the form of:
+    # letters, symbols, numbers
     random.shuffle(password_list)
 
     # password = ""
     # for char in password_list:
     #     password += char
+    # join the characters in the password list with nothing inbetween
     password = "".join(password_list)
+
+    # delete currently placed password and replace with randomly generated password
     pass_entry.delete(0, END)
     pass_entry.insert(0, password)
+
+    # copy password to clipboard
     pyperclip.copy(password)
 
 # ---------------------------- SAVE PASSWORD ------------------------------- #
@@ -53,11 +67,12 @@ def save():
     username = username_entry.get()
     password = pass_entry.get()
 
-
-
+    # if the website or password is empty or if both are empty, generate popup box that lets the user know
+    # that something is missing
     if (len(website) or len(password)) == 0 or (len(website) and len(password)) == 0:
         messagebox._show(title="Field Empty", message="You left either the website or password blank!")
 
+    # otherwise, popup and ok/cancel box. if okay is clicked, continue
     else:
         is_okay = messagebox.askokcancel(title=website, message=f"These are the details entered:\n"
                                                       f"Email: {website}\n"
@@ -65,6 +80,7 @@ def save():
                                                       f"Password: {password}\n"
                                                       f"Is it okay to save?")
 
+        # if details are okay, append the data to a new text file
         if is_okay:
             # open data.txt, if doesn't exist, creates and appends to end
             with open("data.txt", "a") as data:
