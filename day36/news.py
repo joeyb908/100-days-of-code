@@ -1,12 +1,14 @@
-from api_requests import API_Request
-from stocks import Stocks
+from api_requests import APIRequest
 
-class News():
 
-    def __init__(self, api_requests: API_Request):
-        self.news_data = api_requests
+class News:
+
+    def __init__(self, api_requests: APIRequest):
+        # grab the news data and only ull the first 3 articles
+        self.news_data = api_requests.data
         self.articles = self.news_data["articles"][:3]
-        self.titles_descriptions = []
+
+        # create a list with dictionary within that holds the article title and description
         self.news_dict = [{
             "title": article["title"],
             "description": article["description"]
