@@ -1,10 +1,13 @@
 import requests
 import datetime as dt
+from twilio.rest import Client
 
+# grab the date for one/two weeks, and six months ahead
 one_week_ahead = (dt.datetime.today() + dt.timedelta(days=7)).strftime("%d/%m/%Y")
 two_weeks_ahead = (dt.datetime.today() + dt.timedelta(days=14)).strftime("%d/%m/%Y")
 six_months_ahead = (dt.datetime.today() + dt.timedelta(days=182)).strftime("%d/%m/%Y")
 
+# set the information needed to interact with the tequila-kiwi API for flight pricing information
 kiwi_affillID = "joeyb908learningapis"
 kiwi_api_key = "y6HNIitljuhUViC6rq4QXvJpWsVrluOf"
 kiwi_endpoint = "https://tequila-api.kiwi.com/v2/search"
@@ -12,6 +15,7 @@ header = {
     "apikey": kiwi_api_key
 }
 
+# set up destinations I want to visit, as well as two accompanying dictionaries
 destination_cost = {}
 destinations_dict = {}
 destinations = ["FRA", "CDG", "JFK", "LGA", "LAX", "SFO", "JAC", "EWR"]
@@ -48,76 +52,26 @@ for destination in destinations:
         destinations_dict.update({city: {"price": price, "flyTo": code}})
     else:
         pass
+    print("Please hold... pulling data... \n")
 
-#print(destinations_dict)
+# print(destinations_dict)
 
 sheety_user = "35c919a6ec30d59b9847994261f581b9"
 sheety_project = "cheapFlightFinder"
 sheety_sheet = "sheet1"
+sheety_endpoint_get = f"https://api.sheety.co/{sheety_user}/{sheety_project}/{sheety_sheet}"
 row_num = 2
-#sheety_endpoint = f"https://api.sheety.co/{sheety_user}/{sheety_project}/{sheety_sheet}"
 sheety_endpoint_put = f"https://api.sheety.co/{sheety_user}/{sheety_project}/{sheety_sheet}/{row_num}"
-# sheet_data = requests.get(url=sheety_endpoint)
-# sheet_data = {
-#     "sheet1": [
-#         {
-#             "city": "Frankfurt",
-#             "airportCode": "FRA",
-#             "targetPrice": 800,
-#             "lowestPrice": 1532,
-#             "id": 2
-#         },
-#         {
-#             "city": "Paris",
-#             "airportCode": "CDG",
-#             "targetPrice": 800,
-#             "lowestPrice": 785,
-#             "id": 3
-#         },
-#         {
-#             "city": "Jackson Hole",
-#             "airportCode": "JAC",
-#             "targetPrice": 200,
-#             "lowestPrice": 753,
-#             "id": 4
-#         },
-#         {
-#             "city": "New York",
-#             "airportCode": "LGA",
-#             "targetPrice": 200,
-#             "lowestPrice": 153,
-#             "id": 5
-#         },
-#         {
-#             "city": "San Francisco",
-#             "airportCode": "SFO",
-#             "targetPrice": 200,
-#             "lowestPrice": 432,
-#             "id": 6
-#         },
-#         {
-#             "city": "Los Angeles",
-#             "airportCode": "LAX",
-#             "targetPrice": 200,
-#             "lowestPrice": 354,
-#             "id": 7
-#         }
-#     ]
-# }
+sheet_data = requests.get(url=sheety_endpoint_get).json()["sheet1"]
 
-# [print(
-#     f"Quick! Go buy a ticket to {destination['city']}, "
-#     f"tickets are lower than your ${destination['targetPrice']} price point.")
-#  for destination in sheet_data["sheet1"]
-#  if destination["lowestPrice"] < destination["targetPrice"]]
 sheety_update = {}
 for destination in destinations_dict:
     sheety_update = {"sheet1":
-            {
-                "city": destination,
-                "airportCode": destinations_dict[destination]["flyTo"],
-                "lowestPrice": destinations_dict[destination]["price"]
-            }
+        {
+            "city": destination,
+            "airportCode": destinations_dict[destination]["flyTo"],
+            "lowestPrice": destinations_dict[destination]["price"]
+        }
     }
     print(sheety_update)
     update_data = requests.put(url=sheety_endpoint_put, json=sheety_update)
@@ -126,5 +80,18 @@ for destination in destinations_dict:
     row_num += 1
     sheety_endpoint_put = f"https://api.sheety.co/{sheety_user}/{sheety_project}/{sheety_sheet}/{row_num}"
 
-
-
+account_sid = "AC880f7790680abd16f383fb5276809e61"
+auth_token = "640a8117738b3378dac50ad729e72543"
+client = Client(account_sid, auth_token)
+for destination in sheet_data:
+    difference = destination["lowestPrice"] - destination["targetPrice"]
+    if difference < 0:
+        print("it works")
+        message = client.messages \
+            .create(
+                body=f"Quick! Go book a flight to {destination['city']}, "
+                     f"the price is ${abs(difference)} below your target!",
+                from_='+13254200769',
+                to='+15613120537'
+            )
+        print(message.status)
