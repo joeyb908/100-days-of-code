@@ -1,0 +1,3 @@
+First iteration of a webscraper...
+
+Work-in-progress so little to no comments. Also is currently incomplete.
