@@ -5,12 +5,23 @@ response = requests.get("https://news.ycombinator.com/")
 yc_web_page = response.text
 
 soup = BeautifulSoup(yc_web_page, "html.parser")
-article_title = soup.find(name='a', class_='titlelink')
-print(article_title.getText())
-article_link = article_title.get('href')
-print(article_link)
-article_upvote = soup.find(name='span', class_='score')
-print(article_upvote.getText())
+articles = soup.find_all(name='a', class_='titlelink')
+
+article_texts = []
+article_links = []
+for article_tag in articles:
+    text = article_tag.getText()
+    article_texts.append(text)
+    link = article_tag.get('href')
+    article_links.append(link)
+
+print(article_texts)
+print(article_links)
+
+article_upvotes = [score for score in soup.find_all(name='span', class_='score')]
+print(article_upvotes)
+#article_upvotes = soup.find_all(name='span', class_='score')
+
 
 # with open("website.html", encoding='utf-8') as file:
 #     contents = file.read()
