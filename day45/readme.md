@@ -1,3 +1,1 @@
-First iteration of a webscraper...
-
-Work-in-progress so little to no comments. Also is currently incomplete.
+Scrape a webpage to grab the top 100 movies of all time, then write them to a separate txt file
